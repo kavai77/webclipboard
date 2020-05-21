@@ -1,18 +1,19 @@
-# webclipboard
+# Web Clipboard
+https://webclipboard.appspot.com/
 
-## setup
+## Setup
 ```
 gcloud config set project webclipboard
 ```
 
-## run locally
+## Run locally
 ```
 gcloud auth application-default login
 gcloud beta emulators datastore start
 mvn spring-boot:run
 ```
 
-## deploy
+## Deploy
 ```
 mvn package appengine:deploy
 ```
