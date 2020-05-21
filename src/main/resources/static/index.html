@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" type="image/png" sizes="192x192"  href="favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
+    <title>Web Clipboard</title>
+
+</head>
+<body>
+<div class="container">
+    <div class="alert alert-success alert-dismissible hidden" role="alert" id="contentRemovedAlert">
+        Content removed from the server and the database.
+        <button type="button" class="close" aria-label="Close" id="closeContentRemovedAlert">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="row">
+        <div class="col-8">
+            <h1>Web Clipboard</h1>
+        </div>
+        <div class="col right">
+            <a href="#" id="logout" class="hidden">Sign Out</a>
+        </div>
+    </div>
+    <img src="btn_google_signin_dark_normal_web.png" id="login" class="hidden btn">
+
+    <div class="form-group hidden" id="copyPasteArea">
+        <label for="area">Copy or Paste text here</label>
+        <textarea class="form-control" id="area" rows="3"></textarea>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-warning hidden" id="removeButton" data-toggle="tooltip" data-placement="top" title="Removes all content from the servers and wipes the database">Clear</button>
+    </div>
+
+    <div>
+        <span class="badge badge-info">Privacy</span>We only store the content so that we can serve it for your other device. We don't look into the content, ever!
+    </div>
+    <div>
+        <span class="badge badge-info">No history</span>We only store the last content, no history maintained. After you used the service, remove the text, and it will be permanently removed from the database, too!
+    </div>
+    <div>
+        <span class="badge badge-info">Secure</span>Authenticated by the federated Google Authentication service. There is no way we can get your Google credentials. This is guaranteed by Google APIs.
+    </div>
+    <div>
+        <span class="badge badge-info">Open Source</span>Check the source code on <a href="https://github.com/kavai77/webclipboard" target="_blank">GitHub</a></li>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.4/firebase-auth.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
