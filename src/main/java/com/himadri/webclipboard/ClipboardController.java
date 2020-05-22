@@ -19,6 +19,9 @@ public class ClipboardController {
         @RequestParam String userId,
         @RequestParam String text
     ) {
+        if (userId.length() > 1024 || text.length() > 1024 * 1024) {
+            throw new IllegalArgumentException();
+        }
         ofy().save().entity(new Clipboard(userId, new Text(text), System.currentTimeMillis())).now();
         return "OK";
     }
