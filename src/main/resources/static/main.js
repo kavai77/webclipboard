@@ -13,21 +13,14 @@ $( document ).ready(function() {
     let wto;
     $("#area").on('input', function () {
         clearTimeout(wto);
-        wto = setTimeout(function() {
-            $.post({
-                url: "/copy",
-                data: {
-                    userId: firebase.auth().currentUser.uid,
-                    text: $("#area").val()
-                }
-            });
-        }, 500);
+        wto = setTimeout(postData(), 500);
     });
     $("#logout").click(function () {
         firebase.auth().signOut();
     });
     $("#removeButton").click(function () {
         $("#area").val("");
+        postData();
         $("#contentRemovedAlert").show();
     });
     $("#closeContentRemovedAlert").click(function () {
@@ -46,6 +39,16 @@ $( document ).ready(function() {
     firebase.auth().onAuthStateChanged(authStateObserver);
     $('[data-toggle="tooltip"]').tooltip();
 });
+
+function postData() {
+    $.post({
+        url: "/copy",
+        data: {
+            userId: firebase.auth().currentUser.uid,
+            text: $("#area").val()
+        }
+    });
+}
 
 function authStateObserver(user) {
     if (user) { // User is signed in!

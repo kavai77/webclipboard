@@ -32,4 +32,10 @@ public class ClipboardController {
             return "";
         }
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/_ah/warmup")
+    @ResponseBody
+    public String warmup() {
+        return "OK";
+    }
 }

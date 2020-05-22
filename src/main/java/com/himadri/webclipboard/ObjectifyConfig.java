@@ -22,7 +22,7 @@ public class ObjectifyConfig {
 
     @Bean
     public FilterRegistrationBean<ObjectifyFilter> objectifyFilterRegistration() {
-        final FilterRegistrationBean<ObjectifyFilter> registration = new FilterRegistrationBean<>();
+        var registration = new FilterRegistrationBean<ObjectifyFilter>();
         registration.setFilter(new ObjectifyFilter());
         registration.addUrlPatterns("/*");
         registration.setOrder(1);
@@ -31,8 +31,7 @@ public class ObjectifyConfig {
 
     @Bean
     public ServletListenerRegistrationBean<ObjectifyListener> listenerRegistrationBean(Application.GoogleCloudRuntime runtime) {
-        ServletListenerRegistrationBean<ObjectifyListener> bean =
-            new ServletListenerRegistrationBean<>();
+        var bean = new ServletListenerRegistrationBean<ObjectifyListener>();
         bean.setListener(new ObjectifyListener(runtime));
         return bean;
     }
@@ -72,9 +71,6 @@ public class ObjectifyConfig {
 
         @Override
         public void contextDestroyed(ServletContextEvent sce) {
-
         }
     }
-
-
 }
