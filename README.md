@@ -9,7 +9,7 @@ gcloud config set project webclipboard
 ## Run locally
 ```
 gcloud auth application-default login
-gcloud beta emulators datastore start
+gcloud beta emulators datastore start --host-port localhost:8484
 mvn spring-boot:run
 ```
 

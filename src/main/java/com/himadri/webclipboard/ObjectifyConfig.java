@@ -50,7 +50,7 @@ public class ObjectifyConfig {
                 try {
                     ObjectifyService.init(new ObjectifyFactory(
                         DatastoreOptions.newBuilder()
-                            .setHost("localhost:8167")
+                            .setHost("localhost:8484")
                             .setProjectId("my-project")
                             .setCredentials(GoogleCredentials.fromStream(new FileInputStream(
                                 System.getenv("HOME") + "/.config/gcloud/application_default_credentials.json")))
