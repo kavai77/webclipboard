@@ -43,6 +43,19 @@ $( document ).ready(function() {
     };
     firebase.initializeApp(firebaseConfig);
     firebase.auth().onAuthStateChanged(authStateObserver);
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings)
+        {
+            firebase.auth().currentUser.getIdToken()
+                .then(function(result) {
+                    $.ajax($.extend(settings, {
+                        headers: {"X-Authorization-Firebase": result},
+                        beforeSend: $.noop
+                    }));
+                });
+            return false;
+        }
+    });
     $('[data-toggle="tooltip"]').tooltip();
 });
 
@@ -50,7 +63,6 @@ function postData() {
     $.post({
         url: "/copy",
         data: {
-            userId: firebase.auth().currentUser.uid,
             text: $("#area").val()
         }
     });
@@ -62,11 +74,8 @@ function authStateObserver(user) {
         $("#logout").show();
         $("#copyPasteArea").show();
         $("#removeButton").show();
-        $.post({
+        $.get({
             url: "/paste",
-            data: {
-                userId: user.uid,
-            },
             success: function (data) {
                 $("#area").val(data);
                 $("#area").select();

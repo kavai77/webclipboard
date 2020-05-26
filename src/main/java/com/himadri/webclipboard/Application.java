@@ -8,6 +8,8 @@ import java.util.Collections;
 
 @SpringBootApplication
 public class Application {
+    public static final String LOCAL_APPLICATION_CREDENTIALS = System.getenv("HOME") + "/.config/gcloud/application_default_credentials.json";
+
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Application.class);
         if (System.getenv("PORT") != null) {
