@@ -6,6 +6,12 @@ $( document ).ready(function() {
         .mouseleave(function() {
             $( this ).attr("src", "btn_google_signin_dark_normal_web.png");
         })
+        .focusin(function() {
+            $( this ).attr("src", "btn_google_signin_dark_focus_web.png");
+        })
+        .focusout(function() {
+            $( this ).attr("src", "btn_google_signin_dark_normal_web.png");
+        })
         .click(function () {
             let provider = new firebase.auth.GoogleAuthProvider();
             firebase.auth().signInWithPopup(provider);
