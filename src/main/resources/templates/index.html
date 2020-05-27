@@ -22,14 +22,18 @@
         </button>
     </div>
     <div class="row">
-        <div class="col-8">
+        <div class="col">
             <h1>Web Clipboard</h1>
         </div>
-        <div class="col right">
-            <a href="#" id="logout" class="hidden">Sign Out</a>
+        <div class="col right align-self-end hidden" id="loggedInUserContainer">
+            <img id="avatar" height="40px" src="" style="border-radius: 50%;" data-toggle="tooltip" data-placement="bottom">&nbsp;
+            <a href="#" id="logout"><small>Sign Out</small></a>
+        </div>
+        <div class="col right align-self-end hidden" id="loginContainer">
+            <img src="btn_google_signin_dark_normal_web.png" id="login" class="btn">
         </div>
     </div>
-    <img src="btn_google_signin_dark_normal_web.png" id="login" class="hidden btn">
+
 
     <div class="form-group hidden" id="copyPasteArea">
         <label for="area">Copy or Paste text here</label>

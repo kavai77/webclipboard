@@ -71,8 +71,11 @@ function postData() {
 
 function authStateObserver(user) {
     if (user) { // User is signed in!
-        $("#login").hide();
-        $("#logout").show();
+        $("#loginContainer").hide();
+        $("#avatar").prop('src', user.photoURL)
+                    .prop('title', user.displayName)
+                    .tooltip('_fixTitle');
+        $("#loggedInUserContainer").show();
         $("#copyPasteArea").show();
         $("#removeButton").show();
         $.get({
@@ -83,8 +86,8 @@ function authStateObserver(user) {
             }
         })
     } else { // User is signed out!
-        $("#login").show();
-        $("#logout").hide();
+        $("#loginContainer").show();
+        $("#loggedInUserContainer").hide();
         $("#copyPasteArea").hide();
         $("#removeButton").hide();
     }
