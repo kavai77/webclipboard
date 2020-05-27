@@ -60,8 +60,9 @@ $( document ).ready(function() {
 });
 
 function postData() {
-    $.post({
-        url: "/copy",
+    $.ajax({
+        url: "/text",
+        type: "PUT",
         data: {
             text: $("#area").val()
         }
@@ -75,7 +76,7 @@ function authStateObserver(user) {
         $("#copyPasteArea").show();
         $("#removeButton").show();
         $.get({
-            url: "/paste",
+            url: "/text",
             success: function (data) {
                 $("#area").val(data);
                 $("#area").select();

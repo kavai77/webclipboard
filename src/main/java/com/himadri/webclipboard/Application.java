@@ -9,6 +9,7 @@ import java.util.Collections;
 @SpringBootApplication
 public class Application {
     public static final String LOCAL_APPLICATION_CREDENTIALS = System.getenv("HOME") + "/.config/gcloud/application_default_credentials.json";
+    public static final String FIREBASE_SERVICE_CREDENTIALS = System.getenv("HOME") + "/.config/gcloud/webclipboard-firebase-admin-service.json";
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(Application.class);
