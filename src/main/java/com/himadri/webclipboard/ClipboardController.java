@@ -135,8 +135,8 @@ public class ClipboardController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/_ah/warmup")
     @ResponseBody
-    public String warmup() {
-        return "OK";
+    public ResponseEntity<Object> warmup() {
+        return ResponseEntity.ok().build();
     }
 
     @ResponseStatus(value= HttpStatus.PAYLOAD_TOO_LARGE)

@@ -44,10 +44,13 @@
     </div>
 
     <div>
-        <span class="badge badge-info">Privacy</span>We only store the content so that we can serve it for your other device. We don't look into the content, ever!
+        <span class="badge badge-info">Privacy</span>We use your text only to serve it for your other device. We don't run analytics or natural language processing, we don't visit your links and we'll never sell your data.
     </div>
     <div>
-        <span class="badge badge-info">No history</span>We only store the last content, no history maintained. After you used the service, remove the text, and it will be permanently removed from the database, too!
+        <span class="badge badge-info">Encrypted</span>We store your text in a highly encrypted (AES-256) format. For each user we generate a new private key and store it in a separate database.
+    </div>
+    <div>
+        <span class="badge badge-info">No history</span>We only store the last content, no history maintained. After you have used the service, clear the text field, and your previous content will be permanently removed!
     </div>
     <div>
         <span class="badge badge-info">Secure</span>Authenticated by the federated Google Authentication service. There is no way we can get your Google credentials. This is guaranteed by Google APIs.
@@ -60,7 +63,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.14.5/firebase-auth.js"></script>
 <script th:src="@{main.js(v=${mainjshash})}"></script>
