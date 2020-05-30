@@ -19,7 +19,7 @@ $( document ).ready(function() {
     let wto;
     $("#area").on('input', function () {
         clearTimeout(wto);
-        wto = setTimeout(postData(), 500);
+        wto = setTimeout(function () { postData()}, 1000);
     });
     $("#logout").click(function () {
         firebase.auth().signOut();
