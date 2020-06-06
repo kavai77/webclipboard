@@ -16,7 +16,7 @@ class CipherComponentTest {
         CipherEngine cipherComponent = new CipherEngine();
         for (int i = 0; i < 1000; i++) {
             String randomStr = RandomStringUtils.random(i);
-            String encrypt = cipherComponent.encrypt(aesKey, randomStr);
+            byte[] encrypt = cipherComponent.encrypt(aesKey, randomStr);
             String decrypt = cipherComponent.decrypt(aesKey, encrypt);
             assertEquals(randomStr, decrypt, "Iteration: " + i +" original string: " + randomStr);
         }

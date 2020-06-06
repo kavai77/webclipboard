@@ -1,13 +1,11 @@
 package com.himadri.webclipboard;
 
-import com.google.appengine.api.datastore.Text;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import com.googlecode.objectify.NotFoundException;
 import com.himadri.webclipboard.entity.Clipboard;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomUtils;
@@ -24,12 +22,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static com.googlecode.objectify.ObjectifyService.ofy;
 
 @Controller
 public class ClipboardController {
@@ -39,26 +34,17 @@ public class ClipboardController {
     private static final String CLAIM_IV = "iv";
 
     @Autowired
-    private Application.GoogleCloudRuntime runtime;
-
-    @Autowired
     private CipherEngine cipherEngine;
 
     @Autowired
     private ResourceHash resourceHash;
 
+    @Autowired
+    private DynamoDbRepository dynamoDbRepository;
+
     @PostConstruct
     public void init() throws IOException {
-        GoogleCredentials googleCredentials;
-        if (runtime == Application.GoogleCloudRuntime.LOCAL) {
-            try {
-                googleCredentials = GoogleCredentials.fromStream(new FileInputStream(Application.FIREBASE_SERVICE_CREDENTIALS));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            googleCredentials = GoogleCredentials.getApplicationDefault();
-        }
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(getClass().getResourceAsStream("/webclipboard-firebase-admin-service.json"));
         FirebaseOptions options = new FirebaseOptions.Builder()
             .setCredentials(googleCredentials)
             .setProjectId("webclipboard")
@@ -84,21 +70,21 @@ public class ClipboardController {
             throw new PayloadTooLargeException();
         }
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
-        String encrypted = cipherEngine.encrypt(getAesKey(decodedToken), text);
-        ofy().save().entity(new Clipboard(decodedToken.getUid(), new Text(encrypted), System.currentTimeMillis())).now();
+        byte[] encrypted = cipherEngine.encrypt(getAesKey(decodedToken), text);
+        Clipboard clipboard = new Clipboard(decodedToken.getUid(), encrypted, System.currentTimeMillis());
+        dynamoDbRepository.save(clipboard);
         return ResponseEntity.ok().build();
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/text")
     @ResponseBody
     public String getText(@RequestHeader(X_AUTHORIZATION_FIREBASE) String firebaseToken) throws FirebaseAuthException {
-        try {
-            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
-            String encrypted = ofy().load().type(Clipboard.class).id(decodedToken.getUid()).safe().getText().getValue();
-            return cipherEngine.decrypt(getAesKey(decodedToken), encrypted);
-        } catch (NotFoundException e) {
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
+        byte[] encryptedText = dynamoDbRepository.getEncryptedText(decodedToken.getUid());
+        if (encryptedText == null) {
             return "";
         }
+        return cipherEngine.decrypt(getAesKey(decodedToken), encryptedText);
     }
 
     private AESKey getAesKey(FirebaseToken decodedToken) {
