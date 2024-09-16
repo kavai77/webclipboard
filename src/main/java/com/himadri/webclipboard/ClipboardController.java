@@ -7,14 +7,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import com.himadri.webclipboard.entity.Clipboard;
+import com.himadri.webclipboard.security.AuthenticationService;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,30 +22,28 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import javax.annotation.PostConstruct;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
+@RequiredArgsConstructor
 public class ClipboardController {
-    public static final String X_AUTHORIZATION_FIREBASE = "X-Authorization-Firebase";
+    public static final String GAE_SERVICE_ACCOUNT = "/usr/local/secrets/webclipboardsecrets/webclipboard-firebase-admin-service.json";
     private static final ConcurrentHashMap<String, AESKey> memoryKeyStore = new ConcurrentHashMap<>();
     private static final String CLAIM_KEY = "key";
     private static final String CLAIM_IV = "iv";
 
-    @Autowired
-    private CipherEngine cipherEngine;
-
-    @Autowired
-    private ResourceHash resourceHash;
-
-    @Autowired
-    private DynamoDbRepository dynamoDbRepository;
+    private final CipherEngine cipherEngine;
+    private final ResourceHash resourceHash;
+    private final DynamoDbRepository dynamoDbRepository;
+    private final AuthenticationService authenticationService;
 
     @PostConstruct
     public void init() throws IOException {
-        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(getClass().getResourceAsStream("/webclipboard-firebase-admin-service.json"));
-        FirebaseOptions options = new FirebaseOptions.Builder()
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(new FileInputStream(GAE_SERVICE_ACCOUNT));
+        FirebaseOptions options = FirebaseOptions.builder()
             .setCredentials(googleCredentials)
             .setProjectId("webclipboard")
             .setStorageBucket("webclipboard.appspot.com")
@@ -61,25 +59,22 @@ public class ClipboardController {
         return "index";
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/text")
-    public ResponseEntity<Object> putText(
-        @RequestParam String text,
-        @RequestHeader(X_AUTHORIZATION_FIREBASE) String firebaseToken
-    ) throws FirebaseAuthException {
+    @RequestMapping(method = RequestMethod.PUT, value = "/secure/text")
+    public ResponseEntity<Object> putText(@RequestParam String text) {
         if (text.length() > 1024 * 1024) {
             throw new PayloadTooLargeException();
         }
-        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
+        FirebaseToken decodedToken = authenticationService.getFirebaseToken();
         byte[] encrypted = cipherEngine.encrypt(getAesKey(decodedToken), text);
         Clipboard clipboard = new Clipboard(decodedToken.getUid(), encrypted, System.currentTimeMillis());
         dynamoDbRepository.save(clipboard);
         return ResponseEntity.ok().build();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/text")
+    @RequestMapping(method = RequestMethod.GET, value = "/secure/text")
     @ResponseBody
-    public String getText(@RequestHeader(X_AUTHORIZATION_FIREBASE) String firebaseToken) throws FirebaseAuthException {
-        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(firebaseToken);
+    public String getText() {
+        FirebaseToken decodedToken = authenticationService.getFirebaseToken();
         byte[] encryptedText = dynamoDbRepository.getEncryptedText(decodedToken.getUid());
         if (encryptedText == null) {
             return "";
@@ -117,12 +112,6 @@ public class ClipboardController {
                 );
 
         });
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/_ah/warmup")
-    @ResponseBody
-    public ResponseEntity<Object> warmup() {
-        return ResponseEntity.ok().build();
     }
 
     @ResponseStatus(value= HttpStatus.PAYLOAD_TOO_LARGE)

@@ -61,7 +61,7 @@ $( document ).ready(function() {
 
 function postData() {
     $.ajax({
-        url: "/text",
+        url: "/secure/text",
         type: "PUT",
         data: {
             text: $("#area").val()
@@ -79,7 +79,7 @@ function authStateObserver(user) {
         $("#copyPasteArea").show();
         $("#removeButton").show();
         $.get({
-            url: "/text",
+            url: "/secure/text",
             success: function (data) {
                 $("#area").val(data);
                 $("#area").select();

@@ -40,6 +40,5 @@ public class CipherEngine {
         } catch (GeneralSecurityException e) {
             throw new IllegalArgumentException(e);
         }
-
     }
 }
